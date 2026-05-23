@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+  <style>
+    :root { --bg: #0a0a0f; --card: rgba(18,18,30,0.7); --accent: #6366f1; --text: #e8e8f0; }
+    body { margin:0; font-family:Inter,sans-serif; background:var(--bg); color:var(--text); display:flex; align-items:center; justify-content:center; height:100vh; }
+    .login-card { background:var(--card); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:3rem; width:320px; text-align:center; backdrop-filter:blur(20px); }
+    input { width:100%; padding:0.8rem; margin-bottom:1rem; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:8px; color:#fff; }
+    button { width:100%; padding:0.8rem; background:var(--accent); border:none; border-radius:50px; color:#fff; font-weight:600; cursor:pointer; }
+    .error { color:#e74c3c; margin-top:0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <h2 style="margin-bottom:1.5rem;">Admin Login</h2>
+    <input type="text" id="username" placeholder="Username" value="admin">
+    <input type="password" id="password" placeholder="Password" value="admin123">
+    <button onclick="login()">Login</button>
+    <p class="error" id="error"></p>
+  </div>
+  <script>
+    async function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem('admin_token', data.access_token);
+        window.location.href = '/admin/index.html';
+      } else {
+        document.getElementById('error').textContent = 'Invalid credentials!';
+      }
+    }
+  </script>
+</body>
+</html>
